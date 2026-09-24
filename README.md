@@ -1,41 +1,68 @@
 # rag-dlai-local
 
-Hi! If you're here, you probably want to learn RAG (Retrieval-Augmented Generation), specially using the excellent material from deeplearning.ai, but you might, like me, have had trouble accessing the original hosted materials (Weaviate Cloud, Together.ai, Arize Phoenix, ...). This project rewrites the backend code of each week's assignment so the notebooks can be run **completely offline on a low-resource laptop**, while preserving the content, structure, and interface of the original notebooks as closely as possible.
+DeepLearning.AI's RAG course assignments, rewritten to run fully offline on a low-resource laptop.
 
-## Why you might be interested in this project
+[![tests](https://github.com/Farahani1/rag-dlai-local/actions/workflows/tests.yml/badge.svg)](https://github.com/Farahani1/rag-dlai-local/actions/workflows/tests.yml)
 
-- **Runs 100% locally on low‑resource hardware** – all LLM calls and embedding generation happen on your machine using [Ollama](https://ollama.com). I tested it on a very basic laptop (10th‑gen i3, 12 GB RAM, M.2 SSD, Windows 11)
+The course's five assignments assume a hosted LLM, a cloud vector database and a hosted tracing service. This repository replaces all three with local tools and runs every week on a 10th-gen Intel Core i3 with 12 GB RAM. It also tests the notebooks automatically and measures what changes when the model is small enough to run there.
 
-- **No payment or registration required** – all the resources are free
+On the course's Week 5 chatbot, a 1.5B model (`qwen2.5:1.5b`) answers 4 of 12 benchmark questions correctly. Most failures come from one step: the model routes FAQ questions to the product search. Replacing that one LLM call with an embedding lookup doubles the score and cuts the median answer time from 161 s to 36 s; FAQ answers get fast, product questions stay slow ([results](docs/results.md)):
 
-- **Respects the original course** – the core learning flow is preserved, so it would be in the deeplearning.ai way.
+| W5 pipeline, `qwen2.5:1.5b`, CPU only | Correct | Routed correctly | Median latency |
+| --- | --- | --- | --- |
+| As in the course | 4 / 12 | 15 / 30 | 161 s |
+| Embedding router instead of the routing LLM call | 8 / 12 | 10 / 10 | 36 s |
 
+```mermaid
+flowchart LR
+  subgraph Course
+    A[Together.ai LLM]
+    B[Weaviate Cloud]
+    C[Arize Phoenix]
+  end
+  subgraph This repo
+    D[Ollama<br/>gemma3:1b / qwen2.5:1.5b]
+    E[Chroma<br/>in-process]
+    F[Local no-op tracer]
+  end
+  A --> D
+  B --> E
+  C --> F
+```
 
-#### **My Setup:**
-And the models that ran smoothly in the following system:
+## Quick start
 
-| SPECS | |
-| ----- | ----- |
-| CPU | 10th-gen Intel Core i3 |
-| RAM | 12 GB |
-| Storage | M.2 SSD |
-| OS | Windows 11 |
-| Generative model (Ollama) | `gemma3:1b` (W1–W4), `qwen2.5:1.5b` (W5) |
-| Embedding model | `all-MiniLM-L6-v2` |
+Linux / macOS:
 
-*Other recommended models (computation-friendly for home PCs):*
+```bash
+git clone https://github.com/Farahani1/rag-dlai-local.git && cd rag-dlai-local
+python3 -m venv .env && source .env/bin/activate
+pip install -r requirements.txt && cp config_example.yaml config.yaml
+ollama pull gemma3:1b                                # Ollama: https://ollama.com/download
+jupyter notebook                                     # open w1/C1M1_Assignment.ipynb
+```
 
-**Generative (Ollama)**
-- `phi3:mini` – Microsoft Phi-3-mini
-- `qwen2.5:1.5b-instruct` – Qwen2.5-1.5B-Instruct
-- `gemma3:4b` (quantised, e.g. `google/gemma-3-4b-it-qat-q4_0`)
+Windows (PowerShell):
 
-**Embedding**
-- `sentence-transformers/all-MiniLM-L6-v2` (what I used)
-- `multi-qa-MiniLM-L6-cos-v1` – Multi-QA MiniLM
-- `ms-marco-MiniLM-L-6-v2` – a reranker, useful from Week 3 onward
+```powershell
+git clone https://github.com/Farahani1/rag-dlai-local.git; cd rag-dlai-local
+python -m venv .env; .env\Scripts\Activate.ps1
+pip install -r requirements.txt; Copy-Item config_example.yaml config.yaml
+ollama pull gemma3:1b                                # Ollama: https://ollama.com/download
+jupyter notebook                                     # open w1\C1M1_Assignment.ipynb
+```
 
-You just need to put the model name in `config.yaml`.
+Python 3.12 or newer. If PowerShell refuses to run `Activate.ps1`, see [docs/setup.md](docs/setup.md#2-install-python-dependencies). Weeks 4–5 need their vector stores built once; see [docs/setup.md](docs/setup.md).
+
+## Documentation
+
+| Page | For |
+| --- | --- |
+| [Setup](docs/setup.md) | Full install on Windows and Linux/macOS, config, populating Chroma, troubleshooting |
+| [Testing](docs/testing.md) | How the notebooks are tested without manual runs; test tiers; CI |
+| [Results](docs/results.md) | Benchmark of the W5 pipeline on a small local model: accuracy, before/after fixes, where the time goes, one traced failure |
+| [Design decisions](docs/decisions.md) | Why Chroma, why `.py` mirrors, why the weeks stay separate |
+| [Data and licensing](docs/data.md) | Dataset sources, authors, licenses, what the MIT license covers |
 
 ## What's in this repo, week by week
 
@@ -51,102 +78,24 @@ Each week lives in its own `wN/` directory with its own `utils.py` (and, from W3
 
 The course's original, unmodified notebooks are not redistributed here. If you are enrolled in the course, you can download them from the course platform and diff them against the adapted `C1M*_Assignment.ipynb` to see exactly what changed.
 
-### The `.py` mirrors and stateful runners (W3–W5)
+## Why this exists
 
-From Week 3 onward, every notebook's code cells are additionally mirrored into a plain Python module, e.g. `w5/C1M5_Assignment.py`, as one `cell_NN(adapted: bool = False)` function per notebook cell. Passing `adapted=False` runs the original reference implementation (Weaviate/Together.ai-shaped code, for comparison); `adapted=True` runs the local Chroma/Ollama version actually used by the notebook. This mirror is what the automated test suite exercises — it lets the graded exercises and the overall notebook flow be unit-tested without needing a running Jupyter kernel, real Ollama server, or populated vector DB for every single test.
+Hi! If you're here, you probably want to learn RAG (Retrieval-Augmented Generation), specially using the excellent material from deeplearning.ai, but you might, like me, have had trouble accessing the original hosted materials (Weaviate Cloud, Together.ai, Arize Phoenix, ...). This project rewrites the backend code of each week's assignment so the notebooks can be run **completely offline on a low-resource laptop**, while preserving the content, structure, and interface of the original notebooks as closely as possible.
 
-A companion `w5/C1M5_Assignment_stateful.py` (and the W3/W4 equivalents) simulates running the whole notebook top-to-bottom in one shared namespace (`run_until(cell_number, ...)`), which is what the project's regression tests use to catch a change in one cell breaking a later cell — the same class of bug a human would only notice by re-running the whole notebook.
+- **Runs 100% locally on low‑resource hardware** – all LLM calls and embedding generation happen on your machine using [Ollama](https://ollama.com). I tested it on a very basic laptop (10th‑gen i3, 12 GB RAM, M.2 SSD, Windows 11)
 
-**The notebook files themselves (`C1M*_Assignment.ipynb`) are what you actually open and run** — the `.py` mirrors exist for fast, automated testing, not as a substitute for running the notebook.
+- **No payment or registration required** – all the resources are free
 
-## Step-by-step guide
+- **Respects the original course** – the core learning flow is preserved, so it would be in the deeplearning.ai way.
 
-### 1. Get the code
-
-```bash
-git clone https://github.com/Farahani1/rag-dlai-local.git
-cd rag-dlai-local
-```
-
-### 2. Install Python dependencies
-
-```bash
-python -m venv .env
-.env\Scripts\activate   # On Linux/macOS: source .env/bin/activate
-pip install -r requirements.txt
-```
-
-### 3. Install Ollama and pull a model
-
-Download Ollama from https://ollama.com/download and install it.
-
-Pull the small model used above (or any of the alternatives listed):
-```bash
-ollama pull gemma3:1b
-```
-For W5 specifically, `qwen2.5:1.5b` is the model this adaptation was verified against:
-```bash
-ollama pull qwen2.5:1.5b
-```
-`setting.py` checks that Ollama is reachable at import time and raises a clear error if it isn't — start Ollama (`ollama serve`, or just run any `ollama` command once) before opening a notebook.
-
-### 4. Copy and edit the config file
-
-```bash
-cp config_example.yaml config.yaml
-```
-Then open `config.yaml` and set your model names:
-```yaml
-models:
-  ollama:
-    modelName: "gemma3:1b"
-    url: http://localhost:11434/api/generate
-  embeddingModel: "sentence-transformers/all-MiniLM-L6-v2"
-```
-All file paths used by any week (embeddings, CSVs, Chroma DB folders, ...) are declared under `data:` in `config.yaml` and resolved relative to the project root by `setting.py` — you shouldn't need to hardcode a path anywhere else.
-
-### 5. Populate the local vector databases (W3–W5 only)
-
-W1 and W2 work directly off the CSV/joblib files already under `data/`. From W3 onward the notebooks read from a local Chroma collection, which needs to be built once before first use:
-
-```bash
-# W4 — product catalog used by the chatbot
-python w4/populate_products.py
-
-# W5 — its own product collection + a small FAQ collection
-python w5/populate_products.py
-python w5/populate_faq.py
-```
-These are one-time, CPU-bound scripts (encoding ~44k product rows takes a few minutes on modest hardware) — they are never invoked automatically by tests or by opening a notebook. Re-run them if you ever delete `data/chroma_db_products/`.
-
-W3's Chroma collection is built from `data/news_data_dedup.csv` + the already-provided `data/embeddings.joblib`, and is populated by the notebook's own setup cell — no separate script needed.
-
-### 6. Launch Jupyter and run a notebook
-
-```bash
-jupyter notebook
-```
-Open any week's `C1M*_Assignment.ipynb` and run all cells top to bottom. Everything stays offline — no request leaves your machine.
-
-## Running the test suite
-
-Each week's adaptation is covered by an automated test suite under `tests/`, checked in alongside a `tests/README.md` explaining the import/path patterns used to keep tests isolated from each other (see [`tests/README.md`](tests/README.md) for the details — this matters because several weeks each ship their own same-named `utils.py`/`chroma_store.py`).
-
-```bash
-python -m pytest
-```
-
-By default (`pytest.ini`) this runs unit and contract tests only — it skips two optional, heavier tiers:
-
-- `notebook` — executes selected real notebook cells
-- `local_integration` — requires a running local Ollama server, local models, and populated data/vector stores
-
-Run everything, including the slow/local tiers:
-```bash
-python -m pytest -m ""
-```
-
-`tests/w1_w2/` covers Weeks 1–2 (shared conventions, since neither week introduced a vector DB yet); `tests/w3/`, `tests/w4/`, `tests/w5/` each cover their own week's graded cells, adapted modules, and a full stateful regression run through the entire notebook with the LLM/vector-store calls mocked.
+| SPECS | |
+| ----- | ----- |
+| CPU | 10th-gen Intel Core i3 |
+| RAM | 12 GB |
+| Storage | M.2 SSD |
+| OS | Windows 11 |
+| Generative model (Ollama) | `gemma3:1b` (W1–W4), `qwen2.5:1.5b` (W5) |
+| Embedding model | `all-MiniLM-L6-v2` |
 
 ## Project conventions (for anyone extending this further)
 
@@ -158,44 +107,17 @@ These are the ground rules this adaptation follows:
 - The course's original notebooks are not redistributed, but each `.py` mirror keeps the original cloud-based code path (`adapted=False`) next to the local one (`adapted=True`), so every change stays inspectable.
 - Educational behavior (the exercises, their structure, and their intended learning outcome) is preserved, apart from a few small, deliberate deviations needed to run everything locally.
 
-## Known limitations / skipped checks
+## Known limitations
 
 - Small local models (1–1.5B parameters) are noticeably less reliable at structured-output tasks (e.g. W5's JSON filter generation) than the large cloud models the course was originally designed around. Where this happens, the notebook's own fallback logic (e.g. falling back to unfiltered semantic search when JSON parsing fails) is exercised for real rather than being purely theoretical — this is expected behavior with a small local model, not a bug.
 - `w3/retrieval.py`'s / `w5/retrieval.py`'s reranking helpers are carried over from the original course code but are not exercised by every notebook path.
-- Vector DB population scripts (`w4/populate_products.py`, `w5/populate_products.py`, `w5/populate_faq.py`) must be run manually once per environment (Step 5 above); they are intentionally not run automatically by anything (tests, notebook startup) to keep test runs fast and side-effect-free.
+- Vector DB population scripts (`w4/populate_products.py`, `w5/populate_products.py`, `w5/populate_faq.py`) must be run manually once per environment (see [setup](docs/setup.md#5-populate-the-local-vector-databases-w4w5)); they are intentionally not run automatically by anything (tests, notebook startup) to keep test runs fast and side-effect-free.
 
-## Data sources
+## Data and copyright
 
-Every dataset below is already included under `data/` in this repository, so there is nothing to download. This section is here to credit the original authors.
+The datasets under `data/` are credited to their authors, with licenses, in [docs/data.md](docs/data.md). This is an unofficial adaptation, not affiliated with DeepLearning.AI; the MIT license covers the adaptation code only, not course material or third-party data.
 
-| Week(s) | File(s) in `data/` | Dataset | Author | License |
-|---------|--------------------|---------|--------|---------|
-| W1–W3 | `news_data_dedup.csv`, plus `embeddings.joblib` computed from it | [News Headlines 2024](https://www.kaggle.com/datasets/dylanjcastillo/news-headlines-2024) (Kaggle) | Dylan Castillo | MIT |
-| W2–W3 (cited in the notebooks) | `bbc_news.csv` (kept as a reference file; the notebooks run on `news_data_dedup.csv`) | [BBC News](https://www.kaggle.com/datasets/gpreda/bbc-news) (Kaggle) | Gabriel Preda | CC0: Public Domain |
-| W4–W5 | `clothes.csv`, plus `clothes_json.joblib` derived from it | [Fashion Product Images (Small)](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small) (Kaggle) | Param Aggarwal | MIT |
-| W4–W5 | `faq.joblib` | FAQ for a fictional store ("Fashion Forward Hub"), from the course materials | DeepLearning.AI | Course material |
-
-Notes:
-
-- The course notebooks don't name the source of the clothing data. Its columns and row count match the Fashion Product Images dataset listed above.
-- The news articles and product listings themselves belong to their original publishers and retailer. The datasets are used here for education only.
-
-## Final words
-
-### A note on copyright and fairness
-
-This is an unofficial, independent adaptation. It is not affiliated with or endorsed by DeepLearning.AI. The course's lessons, videos and original notebooks are not redistributed here; to take the course itself, enrol through DeepLearning.AI.
-
-What this repo does contain:
-
-- **Adapted assignment notebooks and code.** These are derived from the course's assignments. The parts that called cloud services (Together.ai, Weaviate Cloud, Arize Phoenix) were rewritten to use local tools (Ollama, Chroma, local no-op tracing), and the notebooks' narrative text was rewritten. The `.py` mirrors keep the original cloud-based code path (`adapted=False`) next to the local one for comparison.
-- **Data files under `data/`.** The CSV datasets and precomputed embedding caches come from the course materials or are derived from them, and they remain the property of their original owners. They are included only so the exercises can run offline; see [Data sources](#data-sources) for authors and licenses.
-
-The MIT license in `LICENSE` covers the code written for this adaptation (the local backends, the test suite and the tooling). It does not re-license any course material or third-party data. If you hold rights to anything included here and want it removed, please open an issue and it will be taken down.
-
-I built this so it's accessible to everyone, regardless of ability to pay for cloud API credits or hosted services.
-
-### Thanks
+## Thanks
 
 deeplearning.ai, for creating such a thoughtful RAG course :)
 
