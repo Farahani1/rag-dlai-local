@@ -164,6 +164,22 @@ These are the ground rules this adaptation follows:
 - `w3/retrieval.py`'s / `w5/retrieval.py`'s reranking helpers are carried over from the original course code but are not exercised by every notebook path.
 - Vector DB population scripts (`w4/populate_products.py`, `w5/populate_products.py`, `w5/populate_faq.py`) must be run manually once per environment (Step 5 above); they are intentionally not run automatically by anything (tests, notebook startup) to keep test runs fast and side-effect-free.
 
+## Data sources
+
+Every dataset below is already included under `data/` in this repository, so there is nothing to download. This section is here to credit the original authors.
+
+| Week(s) | File(s) in `data/` | Dataset | Author | License |
+|---------|--------------------|---------|--------|---------|
+| W1–W3 | `news_data_dedup.csv`, plus `embeddings.joblib` computed from it | [News Headlines 2024](https://www.kaggle.com/datasets/dylanjcastillo/news-headlines-2024) (Kaggle) | Dylan Castillo | MIT |
+| W2–W3 (cited in the notebooks) | `bbc_news.csv` (kept as a reference file; the notebooks run on `news_data_dedup.csv`) | [BBC News](https://www.kaggle.com/datasets/gpreda/bbc-news) (Kaggle) | Gabriel Preda | CC0: Public Domain |
+| W4–W5 | `clothes.csv`, plus `clothes_json.joblib` derived from it | [Fashion Product Images (Small)](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small) (Kaggle) | Param Aggarwal | MIT |
+| W4–W5 | `faq.joblib` | FAQ for a fictional store ("Fashion Forward Hub"), from the course materials | DeepLearning.AI | Course material |
+
+Notes:
+
+- The course notebooks don't name the source of the clothing data. Its columns and row count match the Fashion Product Images dataset listed above.
+- The news articles and product listings themselves belong to their original publishers and retailer. The datasets are used here for education only.
+
 ## Final words
 
 ### A note on copyright and fairness
@@ -173,7 +189,7 @@ This is an unofficial, independent adaptation. It is not affiliated with or endo
 What this repo does contain:
 
 - **Adapted assignment notebooks and code.** These are derived from the course's assignments. The parts that called cloud services (Together.ai, Weaviate Cloud, Arize Phoenix) were rewritten to use local tools (Ollama, Chroma, local no-op tracing), and the notebooks' narrative text was rewritten. The `.py` mirrors keep the original cloud-based code path (`adapted=False`) next to the local one for comparison.
-- **Data files under `data/`.** The CSV datasets and precomputed embedding caches come from the course materials or are derived from them, and they remain the property of their original owners. They are included only so the exercises can run offline.
+- **Data files under `data/`.** The CSV datasets and precomputed embedding caches come from the course materials or are derived from them, and they remain the property of their original owners. They are included only so the exercises can run offline; see [Data sources](#data-sources) for authors and licenses.
 
 The MIT license in `LICENSE` covers the code written for this adaptation (the local backends, the test suite and the tooling). It does not re-license any course material or third-party data. If you hold rights to anything included here and want it removed, please open an issue and it will be taken down.
 
