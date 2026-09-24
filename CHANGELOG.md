@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Focus: a fresh clone installs and runs on Windows, Linux and macOS.
+## [1.1.0] - 2026-09-25
+
+Focus: a fresh clone installs and runs on Windows, Linux and macOS; a benchmark measures what a small local model does on the course's Week 5 pipeline; tests run in CI.
 
 ### Added
 
@@ -76,5 +78,6 @@ First public release.
 
 - The course's original, unmodified notebooks and utility files from the public release.
 
-[Unreleased]: https://github.com/Farahani1/rag-dlai-local/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Farahani1/rag-dlai-local/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Farahani1/rag-dlai-local/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Farahani1/rag-dlai-local/releases/tag/v1.0.0
