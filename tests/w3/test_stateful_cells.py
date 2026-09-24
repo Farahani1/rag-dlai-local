@@ -36,6 +36,15 @@ REQUIRES_DATA = pytest.mark.skipif(
 )
 
 
+@pytest.fixture(autouse=True)
+def _isolated_chroma_path(tmp_path, monkeypatch):
+    """Point cell 8's ``ChromaStore(config.chromaPath)`` at a temp directory,
+    so the tests never write to the project's ``data/chroma_db``."""
+    import setting
+
+    monkeypatch.setattr(setting.config, "chromaPath", tmp_path / "chroma_db")
+
+
 def _make_state() -> NotebookState:
     """Create a fresh NotebookState with adapted mode enabled."""
     state = NotebookState()

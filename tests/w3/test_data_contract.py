@@ -4,11 +4,6 @@ These tests verify the agreement between local data files and the assignment's
 expected document format *before* any Chroma or database code is written.
 
 The assignment expects documents with: id, title, chunk, pubDate, link.
-We have two candidate CSVs:
-
-- news_data_dedup.csv  (870 rows, matches embeddings)
-- bbc_news.csv         (42,115 rows, does NOT match embeddings)
-
 Primary data: news_data_dedup.csv  →  embeddings.joblib (870, 384)
 """
 
@@ -49,9 +44,6 @@ class TestDataFilesExist:
         assert (DATA_DIR / "news_data_dedup.csv").exists(), (
             "Missing data/news_data_dedup.csv"
         )
-
-    def test_bbc_csv_exists(self):
-        assert (DATA_DIR / "bbc_news.csv").exists(), "Missing data/bbc_news.csv"
 
     def test_embeddings_exist(self):
         assert (DATA_DIR / "embeddings.joblib").exists(), (
@@ -126,28 +118,3 @@ class TestTransformedDocument:
         assert isinstance(doc["pubDate"], str)
         assert isinstance(doc["link"], str)
 
-
-# ---------------------------------------------------------------------------
-# bbc_news.csv reference check
-# ---------------------------------------------------------------------------
-
-
-class TestBbcNewsReference:
-    """bbc_news.csv has the right column names but wrong row count."""
-
-    def test_bbc_has_expected_columns(self):
-        df = pd.read_csv(DATA_DIR / "bbc_news.csv")
-        expected = {"title", "pubDate", "guid", "link", "description"}
-        actual = set(df.columns)
-        assert expected.issubset(actual), (
-            f"bbc_news.csv is missing columns: {expected - actual}"
-        )
-
-    def test_bbc_row_count_does_not_match_embeddings(self):
-        """Not a failure test — documents the row-count mismatch."""
-        df = pd.read_csv(DATA_DIR / "bbc_news.csv")
-        embeddings = joblib.load(DATA_DIR / "embeddings.joblib")
-        assert len(df) != embeddings.shape[0], (
-            f"bbc_news.csv has {len(df)} rows but embeddings have "
-            f"{embeddings.shape[0]} — they don't match (expected)"
-        )

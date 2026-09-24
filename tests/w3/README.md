@@ -23,19 +23,16 @@ Run commands from the repository root.
 | Test | Purpose |
 |------|---------|
 | `test_news_csv_exists` | `data/news_data_dedup.csv` must be present |
-| `test_bbc_csv_exists` | `data/bbc_news.csv` must be present |
 | `test_embeddings_exist` | `data/embeddings.joblib` must be present |
 | `test_row_count_matches_embedding_count` | The CSV must have exactly 870 rows, matching the 870 embeddings |
 | `test_embeddings_shape_and_dtype` | Embeddings must be a 2D float32 array of shape (870, 384) |
 | `test_each_row_transforms_to_required_fields` | Every row maps to a document with: `id`, `title`, `chunk`, `pubDate`, `link` |
 | `test_required_fields_have_non_null_values` | No empty or None values in required fields |
 | `test_single_row_demo` | Type-level verification on a representative row |
-| `test_bbc_has_expected_columns` | Reference check — `bbc_news.csv` has the right schema |
-| `test_bbc_row_count_does_not_match_embeddings` | Documents the row-count mismatch (42,115 vs 870) |
 
 ### Assumptions
 
-- **Primary data source**: `data/news_data_dedup.csv` (870 rows) — not `bbc_news.csv`.
+- **Primary data source**: `data/news_data_dedup.csv` (870 rows), whose rows match `data/embeddings.joblib`.
 - **Column mapping** (news_data_dedup → assignment document):
 
   | CSV column | Document field | Notes |

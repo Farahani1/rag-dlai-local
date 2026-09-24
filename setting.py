@@ -31,7 +31,9 @@ class AppConfig:
 
 
 def resolve_path(path_str: str, base_dir: Path = PROJECT_ROOT) -> Path:
-    p = Path(path_str)
+    # Accept both Windows-style (.\data\x) and POSIX-style (data/x) separators,
+    # so the same config.yaml works on Windows, Linux and macOS.
+    p = Path(str(path_str).replace("\\", "/"))
     if not p.is_absolute():
         p = base_dir / p
     return p.resolve()
@@ -132,4 +134,8 @@ def ensure_ollama_running(
 
 
 config = load_config()
-ensure_ollama_running(config, try_start=False)
+
+# Ollama is deliberately NOT checked at import time: importing the configuration
+# (e.g. in tests, or to inspect paths) must not require a running Ollama server.
+# Generation calls report a clear error if Ollama is unreachable; notebooks can
+# also call ensure_ollama_running(config) explicitly.

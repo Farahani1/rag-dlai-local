@@ -52,6 +52,6 @@ collection = store.get_or_create_collection(COLLECTION_NAME)
 
 ids = [d["id"] for d in documents]
 metadatas = [{k: v for k, v in d.items() if k != "id"} for d in documents]
-collection.add(ids=ids, embeddings=embeddings.tolist(), metadatas=metadatas)
+collection.upsert(ids=ids, embeddings=embeddings.tolist(), metadatas=metadatas)
 
 print(f"Done! Collection '{COLLECTION_NAME}' count: {collection.count()}")

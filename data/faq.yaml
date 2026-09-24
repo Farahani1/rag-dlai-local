@@ -1,0 +1,108 @@
+# FAQ for the fictional online clothing store used in W4-W5 ("Fashion Forward Hub").
+# Written for this project; replaces the FAQ that shipped with the course materials.
+# Every fact below is invented.
+#
+# Schema (unchanged from the course): a list of {question, answer, type}.
+# After editing, rebuild data/faq.joblib from the repository root with:
+#   python -c "import yaml, joblib; joblib.dump(yaml.safe_load(open('data/faq.yaml', encoding='utf-8')), 'data/faq.joblib')"
+# then refresh the vector store with: python w5/populate_faq.py
+
+- type: general information
+  question: What are your working hours?
+  answer: The website takes orders at any time of day. Our support team answers chat and email from 8:00 AM to 8:00 PM (Central European Time), Monday to Saturday, and is closed on Sundays and public holidays.
+
+- type: general information
+  question: Where is Fashion Forward Hub based?
+  answer: Fashion Forward Hub is an online-only shop. Our team and warehouse are at 42 Weaver Street, Loomsbury, Northshire.
+
+- type: general information
+  question: Can I visit a physical shop to try things on?
+  answer: We do not run physical shops. Instead, you can order several sizes and send back the ones that do not fit at no charge (see our returns questions).
+
+- type: general information
+  question: How do I contact customer support?
+  answer: Use the chat button on any page, or email help@fashionforwardhub.example. We aim to reply within one working day.
+
+- type: general information
+  question: Do I need an account to place an order?
+  answer: No. You can check out as a guest. An account lets you save addresses, see your order history and start returns without an order number.
+
+- type: general information
+  question: How do I delete my account?
+  answer: Go to 'Account settings' and choose 'Delete account'. We remove your personal data within 14 days, except invoices we are legally required to keep.
+
+- type: general information
+  question: How can I check where my order is?
+  answer: When your parcel leaves the warehouse we email you a tracking link. The same link appears under 'My orders' if you have an account.
+
+- type: product information
+  question: What kinds of products do you sell?
+  answer: We sell clothing, shoes and accessories for women, men and children, from everyday basics to occasion wear.
+
+- type: product information
+  question: How do I find the right size?
+  answer: Every product page has a 'Size guide' link with body measurements in centimetres and inches. Where a style runs small or large, the page says so.
+
+- type: product information
+  question: How often do new products arrive?
+  answer: New items are added every Thursday. The 'New in' page lists everything added in the last four weeks.
+
+- type: product information
+  question: How do I find out what a product is made of?
+  answer: Fabric composition and care instructions are listed in the 'Details' tab on each product page.
+
+- type: product information
+  question: An item I want is sold out. Will it come back?
+  answer: Some items are restocked and some are not. Click 'Email me when available' on the product page and we will write to you if it returns.
+
+- type: product information
+  question: Do you sell gift cards?
+  answer: Yes. Digital gift cards from EUR 10 to EUR 200 are available on the 'Gift cards' page and are valid for two years.
+
+- type: shipping and delivery
+  question: How much does delivery cost and how long does it take?
+  answer: Standard delivery takes 3 to 5 working days and costs EUR 4.95, or is free on orders over EUR 60. Express delivery arrives the next working day if you order before 2:00 PM and costs EUR 9.95.
+
+- type: shipping and delivery
+  question: Which countries do you deliver to?
+  answer: We deliver to most countries in Europe and to the United States and Canada. The full list, with prices and delivery times, is on the 'Delivery' page.
+
+- type: shipping and delivery
+  question: Can I change my delivery address after ordering?
+  answer: Contact support within one hour of placing the order. After that the parcel is usually packed and the address can no longer be changed.
+
+- type: shipping and delivery
+  question: My parcel is late. What should I do?
+  answer: Check the tracking link first. If the parcel is more than three working days past the expected date, contact support and we will trace it or send a replacement.
+
+- type: returns and exchanges
+  question: How do I return an item?
+  answer: You can return unworn items with their tags within 45 days of delivery. Start the return in 'My orders' (or with your order number on the 'Returns' page), print the label and drop the parcel at any partner drop-off point.
+
+- type: returns and exchanges
+  question: Do I have to pay for return shipping?
+  answer: Returns are free within the country the order was delivered to. For returns from another country, the cost of postage is deducted from your refund.
+
+- type: returns and exchanges
+  question: Can I exchange an item for a different size?
+  answer: Yes. Choose 'Exchange' when you start the return and pick the new size. We send the replacement as soon as the original is scanned at the drop-off point.
+
+- type: returns and exchanges
+  question: When will I get my refund?
+  answer: We refund to your original payment method within 7 days of the return reaching our warehouse, and email you when it has been processed.
+
+- type: returns and exchanges
+  question: Can I return items bought in a sale?
+  answer: Yes, sale items follow the same 45-day return policy. Underwear, swimwear with a removed hygiene strip and gift cards cannot be returned.
+
+- type: payments and promotions
+  question: Which payment methods can I use?
+  answer: We accept Visa, Mastercard, American Express, PayPal, Apple Pay and Fashion Forward Hub gift cards.
+
+- type: payments and promotions
+  question: Can I combine discount codes?
+  answer: Only one discount code can be used per order, but a gift card can be used together with a discount code.
+
+- type: payments and promotions
+  question: Where can I see current offers?
+  answer: Current offers are listed on the 'Offers' page. Newsletter subscribers also receive a 10 percent code for their first order.

@@ -11,12 +11,12 @@ models:
   ollamaEmbeddingModel: bge-m3:latest 
 
 data:
-  newsEmbeddings: .\data\embeddings.joblib
-  newsCSV: .\data\news_data_dedup.csv
-  chromaPath: .\data\chroma_db
-  clothesData: .\data\clothes_json.joblib
-  faqData: .\data\faq.joblib
-  productsChromaPath: .\data\chroma_db_products
+  newsEmbeddings: data/embeddings.joblib
+  newsCSV: data/news_data_dedup.csv
+  chromaPath: data/chroma_db
+  clothesData: data/clothes_json.joblib
+  faqData: data/faq.joblib
+  productsChromaPath: data/chroma_db_products
 
 
 completionOptions:

@@ -7,12 +7,14 @@
 *.css
 dlme*
 
-# Chroma DB auto-generated binary persistence
+!data/*
+# Benchmark results are evidence and must be tracked
+!benchmark/results/*.csv
+# Chroma DB auto-generated binary persistence (must come after !data/*)
 data/chroma_db/
 data/chroma_db_products/
 prompts/*
 orginal-assignment-files/*
-!data/*
 w3/data/
 
 

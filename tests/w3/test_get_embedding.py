@@ -301,15 +301,15 @@ class TestGetEmbeddingDefaultPath:
         # Point PROJECT_ROOT to tmp_path via monkeypatch
         monkeypatch.setattr(_embedding_module, "PROJECT_ROOT", tmp_path)
 
+        # ``os`` stays real so the directory is actually created under
+        # tmp_path; the cache misses and the (mocked) model is used.
+        fake_model = MagicMock()
+        fake_model.encode.return_value = dummy_embeddings
         with (
-            patch.object(_embedding_module, "os") as mock_os,
             patch.object(_embedding_module, "joblib") as mock_joblib,
-            patch.object(_embedding_module, "SentenceTransformer"),
+            patch.object(_embedding_module, "_get_model_no_cache", return_value=fake_model),
             patch.object(_embedding_module, "requests"),
         ):
-            mock_os.path.exists.return_value = True
-            mock_joblib.load.return_value = dummy_embeddings
-
             result = get_embedding(dummy_texts)
 
             np.testing.assert_array_equal(result, dummy_embeddings)
@@ -317,6 +317,8 @@ class TestGetEmbeddingDefaultPath:
             assert expected_cache_parent.is_dir(), (
                 f"Expected cache dir {expected_cache_parent} to have been created"
             )
+            cache_file = Path(mock_joblib.dump.call_args.args[1])
+            assert cache_file.parent == expected_cache_parent
 
     def test_custom_cache_dir_respected(self, tmp_path, monkeypatch, dummy_texts, dummy_embeddings):
         """When ``cache_dir`` is provided, uses that instead of default."""
@@ -325,21 +327,22 @@ class TestGetEmbeddingDefaultPath:
         custom_dir = tmp_path / "my_cache"
         monkeypatch.setattr(_embedding_module, "PROJECT_ROOT", tmp_path)
 
+        fake_model = MagicMock()
+        fake_model.encode.return_value = dummy_embeddings
         with (
-            patch.object(_embedding_module, "os") as mock_os,
             patch.object(_embedding_module, "joblib") as mock_joblib,
-            patch.object(_embedding_module, "SentenceTransformer"),
+            patch.object(_embedding_module, "_get_model_no_cache", return_value=fake_model),
             patch.object(_embedding_module, "requests"),
         ):
-            mock_os.path.exists.return_value = True
-            mock_joblib.load.return_value = dummy_embeddings
-
             result = get_embedding(dummy_texts, cache_dir=str(custom_dir))
 
             np.testing.assert_array_equal(result, dummy_embeddings)
             assert custom_dir.is_dir(), (
                 f"Expected custom cache dir {custom_dir} to have been created"
             )
+            cache_file = Path(mock_joblib.dump.call_args.args[1])
+            assert cache_file.parent == custom_dir
+            assert not (tmp_path / "w3").exists()
 
 
 # ============================================================================

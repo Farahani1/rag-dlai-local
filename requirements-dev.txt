@@ -1,0 +1,8 @@
+# Test-suite dependencies, on top of requirements.txt.
+# pip install -r requirements.txt -r requirements-dev.txt
+
+pytest>=8.0
+# Used by the optional notebook-execution tiers (pytest -m notebook / -m local_integration)
+nbclient>=0.10
+nbformat>=5.10
+ipykernel>=6.29
