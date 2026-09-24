@@ -1,0 +1,42 @@
+# Dev set for choosing the embedding router's threshold.
+#
+# Written fresh for this purpose. To keep the benchmark untouched by tuning:
+# - no benchmark question and no near-paraphrase of one;
+# - FAQ-type queries cover FAQ topics the benchmark does NOT ask about
+#   (the benchmark asks about support hours, the return window, express
+#   delivery cost, standard delivery, gift cards with codes, payment methods);
+# - product queries use other items than the benchmark's (blue men's T-shirts,
+#   black formal shoes, red summer dresses, women's handbags).
+#
+# `threshold` is written by `python benchmark/tune_router.py --write` and
+# must be committed before any router run. Don't change it after results exist.
+
+threshold: 0.4025
+
+faq:
+  - Can I delete my account and all my data?
+  - I made a typo in my address, can you still change it?
+  - Is there a way to reach a human at customer service?
+  - Do you have a real shop where I can try clothes on?
+  - Where do I find the measurements for each size?
+  - An item is out of stock, will you get it again?
+  - When do you add new stuff to the website?
+  - After I send something back, how soon do I see my money?
+  - The trousers are too small, can I swap them for a bigger size?
+  - Do you ship to Canada?
+  - My package still hasn't arrived and it's a week late.
+  - Can I buy something without making an account?
+
+product:
+  - Do you have green sneakers for kids?
+  - I'm looking for a warm woollen scarf for winter.
+  - Any silver watches for women?
+  - I want a pair of running shoes.
+  - Show me some ethnic kurtas for a festival.
+  - Suggest a white shirt I can wear to the office.
+  - Do you carry sunglasses for men?
+  - What backpacks do you have for travelling?
+  - Find me pink flip flops.
+  - I need a navy blazer for a job interview.
+  - Any jeans for women under 50?
+  - Show me casual tops for the summer.

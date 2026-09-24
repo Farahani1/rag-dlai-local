@@ -1,0 +1,166 @@
+# model: qwen2.5:1.5b
+# model_digest: 65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b
+# question_set_version: 1
+# questions: d1,d2,d3,i1,i2,f1,f2,f3,m1,m2,n1,n2
+# repeats: 1
+# variant: parse
+# temperature: 0
+# cpu: Intel(R) Core(TM) i3-1005G1 CPU @ 1.20GHz
+# ram_gb: 11.8
+# os: Windows-11-10.0.26200-SP0
+# python: 3.14.3
+# started: 2026-09-24T20:54:08
+model,variant,question_id,category,repeat,route,latency_s,filter_json_parsed,fallback,filters,filter_raw_output,answer,correct,manual_override,latency_excluded,error
+qwen2.5:1.5b,parse,d1,direct,1,FAQ,68.01,na,na,,,"The Fashion Forward Hub's customer support is available from 8:00 AM to 8:00 PM (Central European Time) on Monday through Saturday, with the team closed on Sundays and public holidays.",y,,,
+qwen2.5:1.5b,parse,d2,direct,1,Product,174.89,y,n,"[{""gender"": {""$in"": [""Women"", ""Men""]}}, {""masterCategory"": {""$in"": [""Clothing Set""]}}, {""articleType"": {""$in"": [""Lounge Pants""]}}, {""baseColour"": {""$in"": [""White""]}}, {""usage"": {""$in"": [""Casual""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Women"", ""Men""],
+    ""masterCategory"": [""Clothing Set""],
+    ""articleType"": [""Lounge Pants""],
+    ""baseColour"": [""White""],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""Casual""],
+    ""season"": [""All seasons""]
+}
+```","Based on the information provided, there is no specific mention of how long you can return an item. Therefore, it's impossible to determine the exact number of days from the available set of clothing products.",n,,,
+qwen2.5:1.5b,parse,d3,direct,1,Product,95.95,y,n,"[{""gender"": {""$in"": [""Women"", ""Men""]}}, {""masterCategory"": {""$in"": [""Clothing Set""]}}, {""articleType"": {""$in"": [""Express Delivery""]}}, {""baseColour"": {""$in"": []}}, {""usage"": {""$in"": [""All occasions""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Women"", ""Men""],
+    ""masterCategory"": [""Clothing Set""],
+    ""articleType"": [""Express Delivery""],
+    ""baseColour"": [],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""All occasions""],
+    ""season"": [""All seasons""]
+}
+```","The user is asking about the cost of express delivery services. To provide an accurate answer, I would need more specific information such as the type of service (e.g., standard, expedited), the location from which the request originates, and the destination. Could you please clarify these details or specify what kind of express delivery service you're interested in?",n,,,
+qwen2.5:1.5b,parse,i1,indirect,1,Product,189.66,y,n,"[{""gender"": {""$in"": [""Women""]}}, {""masterCategory"": {""$in"": [""Apparel""]}}, {""articleType"": {""$in"": [""Dresses""]}}, {""baseColour"": {""$in"": [""Blue""]}}, {""usage"": {""$in"": [""Formal""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Women""],
+    ""masterCategory"": [""Apparel""],
+    ""articleType"": [""Dresses""],
+    ""baseColour"": [""Blue""],
+    ""price"": {""min"": 70, ""max"": ""inf""},
+    ""usage"": [""Formal""],
+    ""season"": [""All seasons""]
+}
+```","Based on the available clothing products, there is no product listed that matches your description exactly. However, we can infer some information from the provided data:
+
+1. The query mentions an order coming to 70 euros.
+2. It asks if you have to pay for standard delivery and how long it will take.
+
+From the list of available products:
+- There are two French Connection Women Blue Dresses listed: Product IDs 43511, 48465, 48083, and 43680.
+- The price range for these items is between 29.99 to 79.99 euros.
+
+Given the information provided in the query:
+- You are ordering a blue dress.
+- Your order comes to approximately 70 euros.
+
+Based on this, you can infer that you have ordered a French Connection Women Blue Dress priced at around 69.99 euros (the closest price point from the available options).
+
+Since there is no specific information about standard delivery costs or shipping times for these products, we cannot provide exact answers to your query based solely on the given data.
+
+However, if you are looking for a general answer:
+- Standard delivery might be included in the price of the product.
+- The time it takes for delivery would depend on where you live and the specific courier service used. Typically, standard delivery can take 3-7 days within Europe.
+
+Please note that this is an educated guess based on available information, and actual costs and times may vary depending on your location and chosen shipping method.",n,,,
+qwen2.5:1.5b,parse,i2,indirect,1,Product,174.12,n,y,,"```json
+{
+    ""gender"": [""Unisex"", ""Women""],
+    ""masterCategory"": [""Free Gifts""],
+    ""articleType"": [],
+    ""baseColour"": [],
+    ""price"": {""min"": 0, ""max"": inf},
+    ""usage"": [""All occasions""],
+    ""season"": [""All seasons""]
+}
+```","Product ID: 31187
+
+Gift cards are typically separate from discounts codes. A gift card can be used to purchase items directly without needing a discount code. Gift cards have an expiration date, usually within one year of the original purchase date or when you first receive it.
+
+Product ID: 54968
+
+A gift card is valid for 12 months after its issuance date unless stated otherwise by the seller.",n,,,
+qwen2.5:1.5b,parse,f1,filter,1,Product,161.11,y,n,"[{""gender"": {""$in"": [""Men""]}}, {""masterCategory"": {""$in"": [""Apparel""]}}, {""articleType"": {""$in"": [""T-shirts""]}}, {""baseColour"": {""$in"": [""Blue""]}}, {""usage"": {""$in"": [""Formal""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Men""],
+    ""masterCategory"": [""Apparel""],
+    ""articleType"": [""T-shirts""],
+    ""baseColour"": [""Blue""],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""Formal""],
+    ""season"": [""All seasons""]
+}
+```","3985  
+26308  
+34247",y,,,
+qwen2.5:1.5b,parse,f2,filter,1,Product,115.68,y,n,"[{""gender"": {""$in"": [""Men""]}}, {""masterCategory"": {""$in"": [""Shoes""]}}, {""articleType"": {""$in"": [""Sports Shoes""]}}, {""baseColour"": {""$in"": [""Black""]}}, {""usage"": {""$in"": [""Formal""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Men""],
+    ""masterCategory"": [""Shoes""],
+    ""articleType"": [""Sports Shoes""],
+    ""baseColour"": [""Black""],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""Formal""],
+    ""season"": [""All seasons""]
+}
+```",Product ID: 5368,n,,,
+qwen2.5:1.5b,parse,f3,filter,1,Product,141.93,y,n,"[{""gender"": {""$in"": [""Women""]}}, {""masterCategory"": {""$in"": [""Apparel""]}}, {""articleType"": {""$in"": [""Dresses""]}}, {""baseColour"": {""$in"": [""Red""]}}, {""usage"": {""$in"": [""Casual"", ""Sports""]}}, {""season"": {""$in"": [""Summer""]}}]","```json
+{
+    ""gender"": [""Women""],
+    ""masterCategory"": [""Apparel""],
+    ""articleType"": [""Dresses""],
+    ""baseColour"": [""Red""],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""Casual"", ""Sports""],
+    ""season"": [""Summer""]
+}
+```","41571  
+48084",y,,,
+qwen2.5:1.5b,parse,m1,limitation,1,Product,174.35,y,n,"[{""gender"": {""$in"": [""Women""]}}, {""masterCategory"": {""$in"": [""Accessories""]}}, {""articleType"": {""$in"": [""Handbags""]}}, {""baseColour"": {""$in"": [""Black""]}}, {""usage"": {""$in"": [""All occasions""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Women""],
+    ""masterCategory"": [""Accessories""],
+    ""articleType"": [""Handbags""],
+    ""baseColour"": [""Black""],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""All occasions""],
+    ""season"": [""All seasons""]
+}
+```","Product ID: 35918  
+Product ID: 20450  
+Product ID: 35913",n,,,
+qwen2.5:1.5b,parse,m2,limitation,1,Product,92.07,y,n,"[{""gender"": {""$in"": [""Unisex""]}}, {""masterCategory"": {""$in"": [""Free Items""]}}, {""articleType"": {""$in"": []}}, {""baseColour"": {""$in"": []}}, {""usage"": {""$in"": [""All occasions""]}}, {""season"": {""$in"": [""All seasons""]}}]","```json
+{
+    ""gender"": [""Unisex""],
+    ""masterCategory"": [""Free Items""],
+    ""articleType"": [],
+    ""baseColour"": [],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""All occasions""],
+    ""season"": [""All seasons""]
+}
+```",The user is asking about how many types of payments they accept.,n,,,
+qwen2.5:1.5b,parse,n1,insufficient,1,Product,162.19,n,y,,"{
+    ""gender"": [""Women"", ""Men""],
+    ""masterCategory"": [""Apparel""],
+    ""articleType"": [""Trousers""],
+    ""baseColour"": [""Black""],
+    ""price"": {""min"": 0, ""max"": inf},
+    ""usage"": [""Casual""],
+    ""season"": [""All seasons""]
+}","Yes, we do offer a student discount. Here are some products that qualify:
+
+- Product ID: 8603 (Crocs Crocband Kids Black Sandals)
+- Product ID: 27891 (Scullers For Her Purple Striped Shirt)",n,,,
+qwen2.5:1.5b,parse,n2,insufficient,1,Product,86.02,y,n,"[{""gender"": {""$in"": [""Men"", ""Women""]}}, {""masterCategory"": {""$in"": [""Sports""]}}, {""articleType"": {""$in"": [""Bicycles""]}}, {""baseColour"": {""$in"": []}}, {""usage"": {""$in"": [""Sports""]}}, {""season"": {""$in"": [""All seasons""]}}]","{
+    ""gender"": [""Men"", ""Women""],
+    ""masterCategory"": [""Sports""],
+    ""articleType"": [""Bicycles""],
+    ""baseColour"": [],
+    ""price"": {""min"": 0, ""max"": ""inf""},
+    ""usage"": [""Sports""],
+    ""season"": [""All seasons""]
+}","The user is asking if you sell bicycles. To answer this, I would need more information about your business or products since bicycle sales are a specific type of product that could be offered in various contexts such as online stores, physical retail locations, or through e-commerce platforms. Could you please provide more details on what kind of context you're referring to?",n,,,

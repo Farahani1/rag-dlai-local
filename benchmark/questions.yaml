@@ -1,0 +1,132 @@
+# Benchmark question set for the W5 pipeline (answer_query, simplified=False).
+#
+# Fixed before any model was run. Do not edit entries after results exist;
+# add a new version instead, so every results CSV can name the set it used.
+#
+# Fields
+#   id              stable identifier used in the results CSVs
+#   category        direct | indirect | filter | limitation | insufficient
+#   question        sent verbatim to answer_query()
+#   expects_filter  true if the product route should produce a metadata filter
+#   expected        how the answer is scored (see benchmark/scoring.py):
+#     facts:        list of required facts; each fact is a list of accepted
+#                   spellings, matched case-insensitively as substrings.
+#                   The answer is correct if every fact matches.
+#     products:     the answer is correct if it names at least `min` product
+#                   IDs from the catalogue, and every product it names matches
+#                   every key in `match`, none in `exclude`, and `price_max`
+#                   if given.
+#     abstain:      the answer is correct if it says the store does not offer
+#                   or does not know this (phrases listed in scoring.py).
+# The manual_override column in the results CSV wins over the script's score.
+
+version: 1
+
+questions:
+  # --- Direct factual retrieval: one FAQ entry holds the answer -------------
+  - id: d1
+    category: direct
+    question: What are your customer support hours?
+    expects_filter: false
+    expected:
+      facts:
+        - ["8:00 am", "8 am", "8am", "08:00"]
+        - ["8:00 pm", "8 pm", "8pm", "20:00"]
+
+  - id: d2
+    category: direct
+    question: How many days do I have to return an item?
+    expects_filter: false
+    expected:
+      facts:
+        - ["45"]
+
+  - id: d3
+    category: direct
+    question: How much does express delivery cost?
+    expects_filter: false
+    expected:
+      facts:
+        - ["9.95"]
+
+  # --- Indirect / multi-step: combine two facts ------------------------------
+  - id: i1
+    category: indirect
+    question: My order comes to 70 euros. Do I have to pay for standard delivery, and how long will it take?
+    expects_filter: false
+    expected:
+      facts:
+        - ["free"]
+        - ["3 to 5", "3-5", "3–5", "three to five"]
+
+  - id: i2
+    category: indirect
+    question: Can I use a gift card together with a discount code, and how long is a gift card valid?
+    expects_filter: false
+    expected:
+      facts:
+        - ["yes", "can be used together", "can use", "can combine", "can be combined"]
+        - ["two years", "2 years"]
+
+  # --- Structured filter: the model must emit a usable JSON filter -----------
+  - id: f1
+    category: filter
+    question: Show me three blue T-shirts for men.
+    expects_filter: true
+    expected:
+      products:
+        min: 3
+        match: {articleType: Tshirts, baseColour: Blue, gender: Men}
+
+  - id: f2
+    category: filter
+    question: I need black formal shoes for men that cost less than 100.
+    expects_filter: true
+    expected:
+      products:
+        min: 1
+        match: {articleType: Formal Shoes, baseColour: Black, gender: Men}
+        price_max: 100
+
+  - id: f3
+    category: filter
+    question: Suggest two red dresses for women to wear in summer.
+    expects_filter: true
+    expected:
+      products:
+        min: 2
+        match: {articleType: Dresses, baseColour: Red, gender: Women, season: Summer}
+
+  # --- Model limitation: negation and counting --------------------------------
+  - id: m1
+    category: limitation
+    question: Show me three handbags for women that are not black.
+    expects_filter: true
+    expected:
+      products:
+        min: 3
+        match: {articleType: Handbags, gender: Women}
+        exclude: {baseColour: Black}
+
+  - id: m2
+    category: limitation
+    question: How many different payment methods do you accept?
+    expects_filter: false
+    expected:
+      facts:
+        - ["6", "six"]
+
+  # --- Insufficient context: the right answer is "we don't cover that" -------
+  - id: n1
+    category: insufficient
+    question: Do you offer a student discount?
+    expects_filter: false
+    expected:
+      abstain: true
+
+  - id: n2
+    category: insufficient
+    question: Do you sell bicycles?
+    expects_filter: false
+    expected:
+      abstain: true
