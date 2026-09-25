@@ -1,5 +1,7 @@
 # rag-dlai-local
 
+![RAG, Locally: an offline RAG pipeline (chunking, embeddings, Chroma, local LLM) running on a 12 GB laptop](docs/images/rag-local.jpg)
+
 DeepLearning.AI's RAG course assignments, rewritten to run fully offline on a low-resource laptop.
 
 [![tests](https://github.com/Farahani1/rag-dlai-local/actions/workflows/tests.yml/badge.svg)](https://github.com/Farahani1/rag-dlai-local/actions/workflows/tests.yml)
